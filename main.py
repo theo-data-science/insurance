@@ -1,36 +1,12 @@
 import csv
-from decimal import Decimal
+from analysis import Analysis
 
-total_age_smokers = 0
-number_of_smokers = 0
-total_age_non_smokers = 0
-number_of_non_smokers = 0
-region_none_smokers = {}
-region_smokers = {}
+smokers = Analysis('insurance.csv')
 
-with open('insurance.csv') as csv_file:
-    reader = csv.DictReader(csv_file)
-    for row in reader:
-        # average age smokers versus non smokers
-        if row['smoker'] == 'no':
-            total_age_non_smokers += int(row['age'])
-            number_of_non_smokers += 1
-            if row['region'] in region_none_smokers.keys():
-                region_none_smokers[row['region']] += 1
-            else:
-                region_none_smokers[row['region']] = 1
-        else:
-            total_age_smokers += int(row['age'])
-            number_of_smokers += 1
-            if row['region'] in region_smokers.keys():
-                region_smokers[row['region']] += 1
-            else:
-                region_smokers[row['region']] = 1
+smokers_dict = smokers.average_age_smokers_versus_non_smokers()
+print("Number of non smokers {0} with an average age of : {1:.3g}".format(smokers_dict['number_of_non_smokers'], smokers_dict['age_non_smokers']))
+print("Number of smokers {0} with an average age of : {1:.3g}".format(smokers_dict['number_of_smokers'], smokers_dict['age_smokers']))
 
-n_smoker = "Average age of non-smokers: {0:.3g}".format(total_age_non_smokers / number_of_non_smokers)
-smoker = "Average age of smokers: {0:.3g}".format(total_age_smokers / number_of_smokers)
-print("Number of none-smokers: {0}, {1}". format(number_of_non_smokers, n_smoker))
-print("Number of smokers: {0}, {1}". format(number_of_smokers, smoker))
-
+region_none_smokers, region_smokers = smokers.smokers_versus_non_smokers_per_region()
 print(region_smokers)
 print(region_none_smokers)
